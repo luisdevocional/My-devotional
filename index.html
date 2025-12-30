@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Devotional</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9fafb; padding: 16px; }
+    h1 { text-align: center; }
+    input, textarea, select, button {
+      width: 100%; margin-top: 10px; padding: 10px;
+      border-radius: 8px; border: 1px solid #ccc;
+    }
+    button { background: #2563eb; color: white; font-weight: bold; }
+    .card {
+      background: white; padding: 16px; margin-top: 16px;
+      border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+    .tag { font-size: 12px; color: #2563eb; }
+  </style>
+</head>
+<body>
+
+<h1>📖 My Devotional</h1>
+
+<input id="titulo" placeholder="Título (¿qué te habló Dios hoy?)">
+<textarea id="texto" placeholder="Texto bíblico"></textarea>
+<textarea id="reflexion" placeholder="Reflexión / Revelación"></textarea>
+<textarea id="oracion" placeholder="Oración"></textarea>
+<input id="etiquetas" placeholder="Etiquetas (fe, proceso, identidad)">
+
+<select id="visibilidad">
+  <option>🔒 Privado</option>
+  <option>⛪ Iglesia</option>
+  <option>🌍 Público</option>
+</select>
+
+<button onclick="guardar()">Guardar devocional</button>
+
+<div id="lista"></div>
+
+<script>
+  const lista = document.getElementById("lista");
+  const data = JSON.parse(localStorage.getItem("devocionales") || "[]");
+
+  function guardar() {
+    const d = {
+      titulo: titulo.value,
+      texto: texto.value,
+      reflexion: reflexion.value,
+      oracion: oracion.value,
+      etiquetas: etiquetas.value,
+      visibilidad: visibilidad.value,
+      fecha: new Date().toLocaleDateString()
+    };
+    data.unshift(d);
+    localStorage.setItem("devocionales", JSON.stringify(data));
+    mostrar();
+  }
+
+  function mostrar() {
+    lista.innerHTML = "";
+    data.forEach(d => {
+      lista.innerHTML += `
+        <div class="card">
+          <h3>${d.titulo}</h3>
+          <small>${d.fecha} · ${d.visibilidad}</small>
+          <p><b>Texto:</b> ${d.texto}</p>
+          <p><b>Reflexión:</b> ${d.reflexion}</p>
+          <p><b>Oración:</b> ${d.oracion}</p>
+          <p class="tag">#${d.etiquetas}</p>
+        </div>`;
+    });
+  }
+  mostrar();
+</script>
+
+</body>
+</html>
